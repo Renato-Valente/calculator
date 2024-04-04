@@ -23,7 +23,7 @@ delete_button.addEventListener('click', () => {
   if(current.innerHTML == '') current.innerHTML = '0';
 })
 
-equals_button.addEventListener('click', () => {
+const handleOperation = () => {
   if(operation && operation != '') {
     const n_current = Number(current.innerHTML);
     const n_previous = Number(previous.innerHTML);
@@ -75,6 +75,17 @@ equals_button.addEventListener('click', () => {
       last_previous = n_current;
     }
   }
+}
+
+const setOperand = (_operand) => {
+  last_previous = undefined;
+  operation = _operand;
+  previous.innerHTML = current.innerHTML;
+  current.innerHTML = '0';
+}
+
+equals_button.addEventListener('click', () => {
+    handleOperation();
 
 })
 
@@ -85,12 +96,43 @@ for(let i = 0; i < numbers.length; i++) {
   })
 }
 
+
 for(let i = 0; i < operands.length; i++) {
   operands[i].addEventListener('click', () => {
-    last_previous = undefined;
-    operation = operands[i].innerHTML;
-    previous.innerHTML = current.innerHTML;
-    current.innerHTML = '0';
-
+    setOperand(operands[i].innerHTML);
   })
 }
+
+window.addEventListener('keydown', (e) => {
+  if(isNaN(Number(e.key))) {
+    console.log(e.key, 'nao eh um numero');
+    
+    switch(e.key) {
+      case 'Backspace':
+        current.innerHTML = current.innerHTML.slice(0, -1);
+        break;
+
+      case 'Enter':
+        handleOperation();
+        break;
+
+      case 'c':
+        current.innerHTML = '0';
+        previous.innerHTML = '0';
+
+      case '+':
+      case '-':
+      case '*':
+      case '/':
+
+        setOperand(e.key);
+        break;
+    }
+
+  }
+  else {
+    console.log(e.key, 'eh um numero');
+    if(current.innerHTML == '0') current.innerHTML = '';
+    current.innerHTML += e.key;
+  }
+})
